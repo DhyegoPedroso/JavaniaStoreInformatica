@@ -1,44 +1,39 @@
-#! groovy
+#!groovy
 
-oleoduto {
-  agente qualquer
-  estágios {
+pipeline {
+  agent any
+  stages {
         
-        stage ( ' Docker Build ' ) {
-            agente qualquer
-            passos {
-                sh ' janela de encaixe construção -f Dockerfile -t demo / oracle-java: 8. '
+        stage('Docker Build') {
+            agent any
+            steps {
+                sh 'docker build -f Dockerfile -t demo/oracle-java:8 .'
             }
         }
-        stage ( ' Docker Compile Class ' ) {
-            agente qualquer
-            passos {
-                sh ' cd HelloWorld && docker run --rm -v $ PWD: / app -w / aplicativo demo / oracle-java: 8 javac Main.java '
+        stage('Docker Compile Class') {
+            agent any
+            steps {
+                sh 'cd JavaniaStoreInformatica/src/br/com/dhyStoreInfirmatica/view && docker run --rm -v $PWD:/app -w /app demo/oracle-java:8 javac TelaPrincipal.java'
             }
         }    
-        stage ( ' Docker Execute Java Class ' ) {
-            agente qualquer
-            passos {
-                sh ' cd HelloWorld && docker run --rm -v $ PWD: / app -w / aplicativo demo / oracle-java: 8 javac Main.java e& docker run --rm -v $ PWD: / app -w / app demo / oracle-java: 8 java principal '
-            }
-        }        
+       
     }
     post {
-        sempre {
-            echo ' Isso sempre será executado '
+        always {
+            echo 'This will always run'
         }
         success {
-            echo ' Isso funcionará somente se for bem-sucedido '
+            echo 'This will run only if successful'
         }
-        falha {
-            echo ' Isso será executado somente se houver falha '
+        failure {
+            echo 'This will run only if failed'
         }
-        instável {
-            echo ' Isso será executado somente se a corrida foi marcada como instável '
+        unstable {
+            echo 'This will run only if the run was marked as unstable'
         }
         changed {
-            echo ' Isso será executado somente se o estado do Pipeline for alterado '
-            echo ' Por exemplo, se o Pipeline já estava falhando, mas agora é bem-sucedido '
+            echo 'This will run only if the state of the Pipeline has changed'
+            echo 'For example, if the Pipeline was previously failing but is now successful'
         }
     }
 
